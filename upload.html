@@ -1,0 +1,58 @@
+<head><!DOCTYPE html>
+<html>
+
+  <title>GlowNet - Upload</title>
+  <style>
+    body{margin:0;background:#0d0d0d;color:white;font-family:Arial;text-align:center;}
+    .box{width:400px;margin:50px auto;background:#111;padding:20px;border-radius:15px;border:1px solid #222;}
+    input,textarea{width:90%;padding:12px;margin-top:10px;border-radius:12px;border:none;background:#222;color:white;outline:none;}
+    button{width:95%;padding:12px;margin-top:15px;border:none;border-radius:12px;background:linear-gradient(to right,#00f5ff,#ff00ff);font-weight:bold;cursor:pointer;}
+    a{color:cyan;text-decoration:none;}
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Upload Post</h2>
+  <textarea id="postText" placeholder="Write caption..."></textarea>
+  <button onclick="uploadPost()">Upload</button>
+  <br><br>
+  <a href="index.html">⬅ Back Home</a>
+</div>
+
+<script type="module">
+  import { auth, db } from "./firebase.js";
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { doc, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  let currentUser;
+
+  onAuthStateChanged(auth, (user)=>{
+    if(user){
+      currentUser = user;
+    } else {
+      window.location.href="login.html";
+    }
+  });
+
+  window.uploadPost = async function(){
+    let text = document.getElementById("postText").value;
+    const userDoc = await getDoc(doc(db,"users",currentUser.uid));
+    const data = userDoc.data();
+
+    await addDoc(collection(db,"posts"),{
+      uid: currentUser.uid,
+      username: data.username,
+      name: data.name,
+      text: text,
+      time: Date.now()
+    });
+
+    alert("Uploaded!");
+    window.location.href="index.html";
+  }
+</script>
+
+</body>
+</html>
+

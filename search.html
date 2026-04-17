@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GlowNet - Search</title>
+  <style>
+    body{margin:0;background:#0d0d0d;color:white;font-family:Arial;text-align:center;}
+    .box{width:400px;margin:50px auto;background:#111;padding:20px;border-radius:15px;border:1px solid #222;}
+    input{width:90%;padding:12px;margin-top:10px;border-radius:12px;border:none;background:#222;color:white;outline:none;}
+    button{width:95%;padding:12px;margin-top:15px;border:none;border-radius:12px;background:linear-gradient(to right,#00f5ff,#ff00ff);font-weight:bold;cursor:pointer;}
+    .result{margin-top:15px;padding:10px;background:#222;border-radius:12px;}
+    a{color:cyan;text-decoration:none;}
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Search Users</h2>
+  <input id="searchUser" placeholder="Enter username">
+  <button onclick="search()">Search</button>
+
+  <div id="resultBox"></div>
+  <br>
+  <a href="index.html">⬅ Back Home</a>
+</div>
+
+<script type="module">
+  import { db } from "./firebase.js";
+  import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  window.search = async function(){
+    let username = document.getElementById("searchUser").value.toLowerCase();
+    const snapshot = await getDocs(collection(db,"users"));
+    let box = document.getElementById("resultBox");
+    box.innerHTML = "";
+
+    snapshot.forEach((docu)=>{
+      let d = docu.data();
+      if(d.username.toLowerCase() === username){
+        box.innerHTML = `<div class="result"><b>${d.name}</b><br>@${d.username}<br>${d.email}</div>`;
+      }
+    });
+
+    if(box.innerHTML===""){
+      box.innerHTML = "<p>No user found</p>";
+    }
+  }
+</script>
+
+</body>
+</html>
+
+
+--------------------------------------
+upload.html

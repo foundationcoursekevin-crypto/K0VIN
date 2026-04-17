@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GlowNet - Messages</title>
+  <style>
+    body{margin:0;background:#0d0d0d;color:white;font-family:Arial;text-align:center;}
+    .box{width:420px;margin:30px auto;background:#111;padding:20px;border-radius:15px;border:1px solid #222;}
+    input{width:90%;padding:12px;margin-top:10px;border-radius:12px;border:none;background:#222;color:white;outline:none;}
+    button{width:95%;padding:12px;margin-top:10px;border:none;border-radius:12px;background:linear-gradient(to right,#00f5ff,#ff00ff);font-weight:bold;cursor:pointer;}
+    #chat{margin-top:15px;background:#222;padding:10px;border-radius:12px;height:250px;overflow:auto;text-align:left;}
+    p{margin:5px;}
+    a{color:cyan;text-decoration:none;}
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Friends & Chat</h2>
+
+  <input id="friendEmail" placeholder="Friend Email">
+  <button onclick="addFriend()">Add Friend</button>
+
+  <h3>Your Friends</h3>
+  <div id="friendsList"></div>
+
+  <hr>
+
+  <input id="chatEmail" placeholder="Friend Email to Chat">
+  <input id="message" placeholder="Type message">
+  <button onclick="sendMessage()">Send</button>
+
+  <div id="chat"></div>
+
+  <br>
+  <a href="index.html">⬅ Back Home</a>
+</div>
+
+<script type="module">
+  import { auth, db } from "./firebase.js";
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { doc, getDoc, updateDoc, arrayUnion, collection, addDoc, query, orderBy, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  let currentUser;
+
+  onAuthStateChanged(auth, async(user)=>{
+    if(user){
+      currentUser = user;
+      loadFriends();
+    } else {
+      window.location.href="login.html";
+    }
+  });
+
+  window.addFriend = async function(){
+    let friendEmail = document.getElementById("friendEmail").value;
+
+    const snapshot = await getDocs(collection(db,"users"));
+    let friendUID = null;
+
+    snapshot.forEach((docu)=>{
+      if(docu.data().email === friendEmail){
+        friendUID = docu.id;
+      }
+    });
+
+    if(friendUID===null){
+      alert("User not found!");
+      return;
+    }
+
+    await updateDoc(doc(db,"users",currentUser.uid),{
+      friends: arrayUnion(friendUID)
+    });
+
+    alert("Friend Added!");
+    loadFriends();
+  }
+
+  async function loadFriends(){
+    const userDoc = await getDoc(doc(db,"users",currentUser.uid));
+    const data = userDoc.data();
+
+    let div = document.getElementById("friendsList");
+    div.innerHTML = "";
+
+    if(!data.friends){
+      div.innerHTML = "<p>No friends</p>";
+      return;
+    }
+
+    for(let uid of data.friends){
+      const friendDoc = await getDoc(doc(db,"users",uid));
+      div.innerHTML += `<p>👤 ${friendDoc.data().name} (${friendDoc.data().email})</p>`;
+    }
+  }
+
+  function chatId(email1,email2){
+    return [email1,email2].sort().join("_");
+  }
+
+  window.sendMessage = async function(){
+    let friendEmail = document.getElementById("chatEmail").value;
+    let msg = document.getElementById("message").value;
+
+    const myDoc = await getDoc(doc(db,"users",currentUser.uid));
+    let myEmail = myDoc.data().email;
+
+    let id = chatId(myEmail, friendEmail);
+
+    await addDoc(collection(db,"chats",id,"messages"),{
+      sender: myEmail,
+      message: msg,
+      time: Date.now()
+    });
+
+    document.getElementById("message").value="";
+    loadMessages(id);
+  }
+
+  function loadMessages(id){
+    const q = query(collection(db,"chats",id,"messages"), orderBy("time"));
+    onSnapshot(q,(snapshot)=>{
+      let chat = document.getElementById("chat");
+      chat.innerHTML="";
+      snapshot.forEach((docu)=>{
+        let d = docu.data();
+        chat.innerHTML += `<p><b>${d.sender}:</b> ${d.message}</p>`;
+      });
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GlowNet - Profile</title>
+  <style>
+    body{margin:0;background:#0d0d0d;color:white;font-family:Arial;text-align:center;}
+    .box{width:400px;margin:50px auto;background:#111;padding:20px;border-radius:15px;border:1px solid #222;}
+    img{width:120px;height:120px;border-radius:50%;border:3px solid cyan;}
+    input,textarea{width:90%;padding:12px;margin-top:10px;border-radius:12px;border:none;background:#222;color:white;outline:none;}
+    button{width:95%;padding:12px;margin-top:15px;border:none;border-radius:12px;background:linear-gradient(to right,#00f5ff,#ff00ff);font-weight:bold;cursor:pointer;}
+    a{color:cyan;text-decoration:none;}
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>My Profile</h2>
+  <img src="IMG20211213152219.jpg">
+  <h3 id="name">Kevin</h3>
+  <p id="username">@adminkevin</p>
+  <textarea id="bio"></textarea>
+  <button onclick="saveBio()">Save Bio</button>
+  <br><br>
+  <a href="index.html">⬅ Back Home</a>
+</div>
+
+<script type="module">
+  import { auth, db } from "./firebase.js";
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  let currentUser;
+
+  onAuthStateChanged(auth, async (user)=>{
+    if(user){
+      currentUser = user;
+      loadProfile();
+    } else {
+      window.location.href = "login.html";
+    }
+  });
+
+  async function loadProfile(){
+    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+    const data = userDoc.data();
+    document.getElementById("name").innerText = data.name;
+    document.getElementById("username").innerText = "@"+data.username;
+    document.getElementById("bio").value = data.bio;
+  }
+
+  window.saveBio = async function(){
+    let newBio = document.getElementById("bio").value;
+    await updateDoc(doc(db, "users", currentUser.uid), { bio: newBio });
+    alert("Bio Updated!");
+  }
+</script>
+</body>
+</html>
+

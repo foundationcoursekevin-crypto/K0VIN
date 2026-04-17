@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GlowNet - login</title>
+  <style>
+    body{margin:0;background:#0d0d0d;color:white;font-family:Arial;text-align:center;}
+    .box{width:350px;margin:100px auto;background:#111;padding:25px;border-radius:15px;border:1px solid #222;}
+    input{width:90%;padding:12px;margin-top:12px;border-radius:12px;border:none;background:#222;color:white;outline:none;}
+    button{width:95%;padding:12px;margin-top:15px;border:none;border-radius:12px;background:linear-gradient(to right,#00f5ff,#ff00ff);font-weight:bold;cursor:pointer;}
+    a{color:cyan;text-decoration:none;}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Signup</h2>
+    <input id="username" placeholder="Username">
+    <input id="email" placeholder="Email">
+    <input id="pass" type="password" placeholder="Password">
+    <a href="homereal.html">
+    <button type="button">Login</button>
+    <p>New User <a href="index.html">Signup</a></p>
+  </div>
+
+<script type="module">
+  import { auth, db } from "./firebase.js";
+  import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  window.signup = async function(){
+    let name = document.getElementById("name").value;
+    let username = document.getElementById("username").value;
+    let email = document.getElementById("email").value;
+    let pass = document.getElementById("pass").value;
+
+    const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+
+    await setDoc(doc(db, "users", userCred.user.uid), {
+      name: name,
+      username: username,
+      email: email,
+      bio: "Hello! I am using GlowNet",
+      followers: 0,
+      following: 0
+    });
+
+    alert("Account Created!");
+    window.location.href = "index.html";
+  }
+</script>
+</body>
+</html>
+

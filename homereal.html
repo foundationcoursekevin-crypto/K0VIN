@@ -1,0 +1,548 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <title>Social Media UI</title>
+
+  <style>
+    body{
+      margin:0;
+      font-family: Arial, sans-serif;
+      background: #0d0d0d;
+      color:white;
+    }
+
+    /* NAVBAR */
+    .navbar{
+      background: #111;
+      padding: 15px;
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      position: sticky;
+      top:0;
+      z-index: 1000;
+      border-bottom: 1px solid #222;
+    }
+
+    .navbar h2{
+      margin:0;
+      font-size: 22px;
+      background: linear-gradient(to right, #00f5ff, #ff00ff);
+      webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .navbar input{
+      padding: 8px 12px;
+      border-radius: 12px;
+      border:none;
+      outline:none;
+      width: 220px;
+      background:#222;
+      color:white;
+    }
+
+    .navbar button{
+      padding: 8px 12px;
+      border:none;
+      border-radius: 12px;
+      background: #00f5ff;
+      cursor:pointer;
+      font-weight:bold;
+    }
+
+    /* MAIN LAYOUT */
+    .container{
+      display:flex;
+      justify-content:center;
+      margin-top:20px;
+      gap:20px;
+    }
+
+    /* LEFT MENU */
+    .sidebar{
+      width: 220px;
+      background:#111;
+      padding: 20px;
+      border-radius: 15px;
+      height: 500px;
+      border: 1px solid #222;
+    }
+
+    .sidebar h3{
+      margin-top:0;
+      color:#00f5ff;
+    }
+
+    .sidebar a{
+      display:block;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 12px;
+      background:#1a1a1a;
+      color:white;
+      text-decoration:none;
+      transition:0.2s;
+    }
+
+    .sidebar a:hover{
+      background: linear-gradient(to right, #00f5ff, #ff00ff);
+      color:black;
+      font-weight:bold;
+    }
+
+    /* FEED */
+    .feed{
+      width: 520px;
+    }
+
+    /* STORIES */
+    .stories{
+      display:flex;
+      gap:12px;
+      overflow-x:auto;
+      padding: 15px;
+      border-radius: 15px;
+      background:#111;
+      border:1px solid #222;
+    }
+
+    .story{
+      text-align:center;
+      min-width:70px;
+    }
+
+    .story img{
+      width:60px;
+      height:60px;
+      border-radius:50%;
+      border: 3px solid #ff00ff;
+    }
+
+    .story p{
+      margin:5px 0 0 0;
+      font-size: 12px;
+      color:#ccc;
+    }
+
+    /* CREATE POST */
+    .postbox{
+      margin-top: 15px;
+      background:#111;
+      padding: 15px;
+      border-radius: 15px;
+      border:1px solid #222;
+    }
+
+    .postbox textarea{
+      width:100%;
+      height:70px;
+      border-radius: 12px;
+      border:none;
+      outline:none;
+      background:#1a1a1a;
+      color:white;
+      padding: 12px;
+      font-size: 15px;
+      resize:none;
+    }
+
+    .postbox button{
+      margin-top: 10px;
+      padding: 10px 20px;
+      border:none;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight:bold;
+      background: linear-gradient(to right, #00f5ff, #ff00ff);
+      color:black;
+      width:100%;
+    }
+
+    /* POSTS */
+    .post{
+      margin-top: 20px;
+      background:#111;
+      padding: 15px;
+      border-radius: 15px;
+      border:1px solid #222;
+    }
+
+    .post-header{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+    }
+
+    .post-user{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .post-user img{
+      width:45px;
+      height:45px;
+      border-radius:50%;
+      border:2px solid cyan;
+    }
+
+    .post-user h4{
+      margin:0;
+      font-size: 16px;
+      color:#00f5ff;
+    }
+
+    .post-user p{
+      margin:0;
+      font-size: 12px;
+      color:#aaa;
+    }
+
+    .post img.post-img{
+      width:100%;
+      border-radius: 15px;
+      margin-top: 12px;
+    }
+
+    .post p.caption{
+      margin-top: 10px;
+      font-size: 14px;
+      color:#ddd;
+    }
+
+    /* BUTTONS */
+    .actions{
+      display:flex;
+      justify-content: space-around;
+      margin-top: 10px;
+      gap:10px;
+    }
+
+    .actions button{
+      flex:1;
+      padding: 10px;
+      border:none;
+      border-radius: 12px;
+      cursor:pointer;
+      background:#1a1a1a;
+      color:white;
+      font-weight:bold;
+      transition:0.2s;
+    }
+
+    .actions button:hover{
+      background: cyan;
+      color:black;
+    }
+
+    /* RIGHT PROFILE */
+    .profile{
+      width: 240px;
+      background:#111;
+      padding: 20px;
+      border-radius: 15px;
+      height: 500px;
+      border:1px solid #222;
+      text-align:center;
+    }
+
+    .profile img{
+      width:90px;
+      height:90px;
+      border-radius:50%;
+      border: 3px solid #00f5ff;
+    }
+
+    .profile h3{
+      margin:10px 0 5px 0;
+      color:#ff00ff;
+    }
+
+    .profile p{
+      margin:0;
+      color:#ccc;
+      font-size: 14px;
+    }
+
+    .profile button{
+      margin-top: 15px;
+      padding: 10px;
+      width:100%;
+      border:none;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight:bold;
+      background: linear-gradient(to right, #00f5ff, #ff00ff);
+      color:black;
+    }
+
+    /* BOTTOM NAV (MOBILE STYLE) */
+    .bottom-nav{
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background:#111;
+      display:flex;
+      justify-content: space-around;
+      padding: 12px;
+      border-top: 1px solid #222;
+    }
+
+    .bottom-nav button{
+      background:#1a1a1a;
+      border:none;
+      color:white;
+      padding: 10px 15px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-size: 16px;
+    }
+
+    .bottom-nav button:hover{
+      background: cyan;
+      color:black;
+    }
+
+    /* RESPONSIVE */
+    @media(max-width: 900px){
+      .sidebar, .profile{
+        display:none;
+      }
+      .feed{
+        width: 95%;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <h2>GlowNet</h2>
+    <button>+</button>
+  </div>
+
+  <!-- MAIN -->
+  <div class="container">
+
+    <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h3>Menu</h3>
+    <a href="index.html">🏠 Home</a>
+    <a href="profile.html">👤 Profile</a>
+    <a href="messages.html">💬 Messages</a>
+    <a href="upload.html">📸 Upload</a>
+    <a href="setting.html">⚙ Settings</a>
+    <a href="logout.html">🚪 Logout</a>
+  </div>
+
+    <!-- FEED -->
+    <div class="feed">
+
+      <!-- STORIES -->
+      <div class="stories">
+        <div class="story">
+        <img src>
+          <p>@you</p>
+        </div>
+
+        <div class="story">
+<img src>
+         <p>@hdVinzuda</p>
+        </div>
+
+        <div class="story">
+<img src>
+          <p>@geeta1988</p>
+        </div>
+
+        <div class="story">
+<img src>
+          <p>@ddVinzuda</p>
+        </div>
+
+        <div class="story">
+<img src>
+          <p>@ndVinzuda</p>
+        </div>
+        
+       <div class="story">
+<img src>
+    <p>@laxmivinzuda</p>
+        </div>
+      </div>
+
+      <!-- CREATE POST -->
+      <div class="postbox">
+        <textarea placeholder="What's happening today?"></textarea>
+        <button>Post Now</button>
+      </div>
+
+      <!-- POST 1 -->
+      <div class="post">
+        <div class="post-header">
+          <div class="post-user">
+            <div>
+<img src>
+              <h4>@adminkevin</h4>
+              <p>2 minutes ago</p>
+            </div>
+          </div>
+          <p style="color:#aaa;">⋮</p>
+        </div>
+
+        <p class="caption">
+          🚀 Working on my new Social Media website UI. GlowNet is coming soon!
+           You can post story and photoes
+          you can also chat with friends
+          you can also add advertisement for youy Bussiness, Agency and Company
+        </p>
+
+        <div class="actions">
+          <button>❤️ Like</button>
+          <button>💬 Comment</button>
+          <button>📤 Share</button>
+        </div>
+      </div>
+
+      <!-- POST 2 -->
+      <div class="post">
+        <div class="post-header">
+          <div class="post-user">
+            <div>
+<img src>
+              <h4>@hiteshkumarvinzuda</h4>
+              <p>10 minutes ago</p>
+            </div>
+          </div>
+          <p style="color:#aaa;">⋮</p>
+        </div>
+
+        <p class="caption">
+         Good Morning
+        </p>
+
+        <div class="actions">
+          <button>Like</button>
+          <button>Comment</button>
+          <button>Share</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PROFILE SIDE -->
+    <div class="profile">
+
+      <h3>Kevin</h3>
+<img src>
+      <p>@adminkevin</p>
+
+      <br>
+      <p>Followers: <b style="color:cyan;">50million</b></p>
+      <p>Following: <b style="color:cyan;">47million</b></p>
+      <p>Posts: <b style="color:cyan;">105</b></p>
+
+      <button>Edit Profile</button>
+    </div>
+
+  </div>
+
+</body>
+</html>
+<div class="bottom-nav">
+  <button onclick="window.location.href='index.html'">🏠</button>
+  <button onclick="window.location.href='search.html'">🔍</button>
+  <button onclick="window.location.href='upload.html'">➕</button>
+  <button onclick="window.location.href='messages.html'">💬</button>
+  <button onclick="window.location.href='profile.html'">👤</button>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="module">
+  import { auth, db } from "./firebase.js";
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { doc, getDoc, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  let currentUser;
+
+  onAuthStateChanged(auth, async (user) => {
+    if(user){
+      currentUser = user;
+      loadMyData();
+      loadPosts();
+    } else {
+      window.location.href = "login.html";
+    }
+  });
+
+  async function loadMyData(){
+    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+    const data = userDoc.data();
+    document.getElementById("myName").innerText = data.name;
+    document.getElementById("myUsername").innerText = "@" + data.username;
+    document.getElementById("followers").innerText = data.followers;
+    document.getElementById("following").innerText = data.following;
+  }
+
+  window.createPost = async function(){
+    let text = document.getElementById("postText").value;
+    if(text.trim() === "") return alert("Write something!");
+
+    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+    const data = userDoc.data();
+
+    await addDoc(collection(db, "posts"), {
+      uid: currentUser.uid,
+      username: data.username,
+      name: data.name,
+      text: text,
+      time: Date.now()
+    });
+
+    document.getElementById("postText").value = "";
+  }
+
+  function loadPosts(){
+    const q = query(collection(db, "posts"), orderBy("time","desc"));
+    onSnapshot(q, (snapshot) => {
+      let postsDiv = document.getElementById("posts");
+      postsDiv.innerHTML = "";
+      snapshot.forEach((docu) => {
+        let d = docu.data();
+        postsDiv.innerHTML += `
+          <div class="post">
+            <h4>@${d.username}</h4>
+            <p>${d.text}</p>
+          </div>
